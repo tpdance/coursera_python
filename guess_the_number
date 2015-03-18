@@ -1,0 +1,71 @@
+# template for "Guess the number" mini-project
+# input will come from buttons and an input field
+# all output for the game will be printed in the console
+
+#import modules
+import simplegui, random
+
+#initialize globals
+secret_number = random.randint(0,100)
+user_guess = 0
+count = 7
+
+def new_game():
+    global secret_number, user_guess, count
+    print "welcome to the guessing game"
+    print "default game is easy game"
+    secret_number = random.randint(0,100)
+    user_guess = 0
+    count = 7
+
+# define event handlers for control panel
+def range100():
+    # button that changes the range to [0,100) and starts a new game 
+    global secret_number, count
+    secret_number = random.randint(0,100)
+    count = 7
+    print "you chose the easy game"
+    print "you have " + str(count) + " guesses"
+
+def range1000():
+    # button that changes the range to [0,1000) and starts a new game     
+    global secret_number, count
+    secret_number = random.randint(0,1000)
+    count = 10
+    print "welcome to the hard game"
+    print "you have " + str(count) + " guesses \n"
+    
+def input_guess(guess):
+    # main game logic goes here	
+    global user_guess, count
+    count = count - 1
+    try:
+        user_guess = int(guess)
+    except:
+        print "invalid input"
+    print "you entered:", user_guess
+    if user_guess > secret_number:
+        print "too high, try again \n"
+    elif user_guess < secret_number:
+        print "too low, try again \n"
+    else:
+        print "correct"
+    if count > 0:
+        print "you have", count, "guesses left \n"
+    else:
+        print "you have no more guesses"
+        print "the secret number was", secret_number, "\n"
+        new_game()
+
+# create frame
+frame = simplegui.create_frame("Guessing Game",300,300)
+
+# register event handlers for control elements and start frame
+user_input = frame.add_input("Enter your guess:", input_guess, 100)
+simple_game = frame.add_button("Range: 0 - 100:", range100, 200)
+hard_game = frame.add_button("Range: 0 - 1000:", range1000, 200)
+
+#start game
+frame.start()
+
+# always remember to check your completed program against the grading rubric
