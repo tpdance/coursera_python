@@ -1,0 +1,87 @@
+# template for "Stopwatch: The Game"
+#import modules
+import simplegui
+
+# define global variables
+interval = 100
+tenths = 0
+minutes = 0
+seconds = 0
+new_game = 0
+number_of_starts = 0
+number_of_stops = 0
+score = 0
+t = 0
+text = str(score) + "/" + str(number_of_stops)
+
+# define helper function format that converts time
+# in tenths of seconds into formatted string A:BC.D
+def format(t):
+    minutes = str(tenths//600)
+    t = str(tenths % 10)
+    seconds = tenths//10
+    if seconds < 10:
+        seconds = "0" + str(tenths//10)
+    else:
+        seconds = str(tenths//10)
+    return minutes + ":" + seconds + "." + t 
+
+def score_text():
+    global text
+    return str(score) + "/" + str(number_of_stops)
+
+# define event handlers for buttons; "Start", "Stop", "Reset"
+def start_button_handler():
+    global number_of_starts, new_game
+    if new_game == 0:
+        number_of_starts += 1
+        new_game = 1
+        timer.start()
+    #pass
+    
+def stop_button_handler():
+    global new_game, number_of_stops, score
+    if new_game == 1:
+        new_game = 0
+        number_of_stops += 1
+        timer.stop()
+        if tenths % 10 == 0:
+            score += 1
+    #pass
+    
+def reset_button_handler():
+    global minutes, seconds, tenths, t
+    minutes = 0
+    seconds = 0
+    t = 0
+    tenths = 0
+    new_game = 0
+    number_of_starts = 0
+    score = 0
+    timer.stop()
+    #pass
+    
+# define event handler for timer with 0.1 sec interval
+def timer_handler():
+    global tenths
+    tenths += 1
+
+# define draw handler
+def draw_handler(canvas):
+    canvas.draw_text(format(t), (90, 150), 40, 'Red', 'monospace')
+    canvas.draw_text(score_text(), (200, 50), 20, 'Yellow', 'monospace')
+    
+# create frame
+frame = simplegui.create_frame("Stop Watch", 300, 300)
+
+# register event handlers
+frame.add_button('Start', start_button_handler, 100)
+frame.add_button('Stop', stop_button_handler, 100)
+frame.add_button('Reset', reset_button_handler, 100)
+timer = simplegui.create_timer(interval, timer_handler)
+frame.set_draw_handler(draw_handler)
+
+# start frame
+frame.start()
+
+# Please remember to review the grading rubric
